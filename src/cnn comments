@@ -1,0 +1,85 @@
+counting network
+
+https://ieeexplore.ieee.org/abstract/document/8661632
+https://github.com/isarlab-department-engineering/WS-COUNT
+
+https://paperswithcode.com/task/object-counting/codeless
+https://paperswithcode.com/paper/counting-and-locating-high-density-objects
+https://arxiv.org/pdf/2102.04366v1.pdf
+
+
+
+3 other posibilities
+intercept one of the maps and determine the confidence from that
+add the confidence map as labels and determine the confidence from the output
+add the confidence map as labels and determine the confidence AND the counting from the output map
+
+
+My personal favorite
+train a first network section to determine the confidence map
+use as training data map with different levels of gaussians correlated to confidence numbers per 
+
+then the second section of the network train to determine the actual number of plants and confidence value per plant. One pixel per plant location means 100% confidence, while full white screen is 0 confidence (not sure how to handle false negatives)
+
+should I train both networks separately?
+
+
+
+
+
+do I need to save the model or the state_dict?
+
+how to extract one of the 8 maps?
+
+
+
+regressor counting network
+0-1 hot enconding
+the last layer needs to be a softmax
+which presents the probabilities for each amount
+avoid going above 20 weeds
+
+
+https://github.com/milesial/Pytorch-UNet
+
+tensorboard --logdir=/home/cscbone/git/WS-COUNT/models/log/ --host localhost --port=8088
+http://localhost:8088/
+
+
+
+for conda
+it has to be the version 10 of pytorch to fully work
+
+conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch
+conda install -c conda-forge tqdm tensorboardx matplotlib scipy parse numpy
+
+
+
+
+add the folders
+add in the devkit/ImageSets/Main/
+the files for the training and test set
+add in devkit/csv the csv files for the boxes as csv
+
+delete files/ files to change max count of classes
+
+
+which size should it be the input for the network to be reasonable
+camera matrix
+converter to rgb
+at which level should I consider the image for cnn processing, after matrix and rgb?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
