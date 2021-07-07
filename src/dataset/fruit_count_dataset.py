@@ -1,3 +1,5 @@
+
+
 import csv
 #import cv2
 import os
@@ -10,7 +12,7 @@ import torch
 import torch.utils.data as data
 from PIL import Image
 
-from configs import configs
+#from configs import configs
 
 #maxCount = 3
 #hotEncoded = True

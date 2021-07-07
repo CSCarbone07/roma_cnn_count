@@ -1,4 +1,6 @@
 
+#!/usr/bin/env python
+import rospy    
 class configs:
     def __init__(self):
         #self.dataset_root = '/home/mrs/Dataset/ISARLab_counting_dataset/almond_ISAR/'

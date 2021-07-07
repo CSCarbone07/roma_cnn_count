@@ -1,16 +1,20 @@
 
-        #!/usr/bin/env python
+#!/usr/bin/env python
 import rospy
 from std_msgs.msg import String
 
 
 from dataset.fruit_count_dataset import FruitCounting
-from models.SCOUNT import SCOUNT
-from engines.SCOUNT_Engine import SCOUNT_Engine
-from configs import configs
+#from scripts.dataset.fruit_count_dataset import FruitCounting
+#from fruit_count_dataset import FruitCounting
+#from scripts.models.SCOUNT import SCOUNT
+#from scripts.engines.SCOUNT_Engine import SCOUNT_Engine
+#from roma_confident_scount_ros.configs import configs
+#from configs import configs
+#import configs
 import torch
 
-
+'''
 def callback(data):
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
     
@@ -31,15 +35,18 @@ def listener():
     
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
-    
+ '''   
     
     
 
 if __name__ == '__main__':
+
+    print("starting scount node")
+    
     torch.set_printoptions(edgeitems=800)
     
-    torch.cuda.empty_cache()
-    torch.cuda.set_per_process_memory_fraction(0.9, 0)
+    #torch.cuda.empty_cache()
+    #torch.cuda.set_per_process_memory_fraction(0.9, 0)
 
     conf = configs()
     dataset_root = conf.dataset_root
@@ -62,4 +69,6 @@ if __name__ == '__main__':
                            batch_size=5, save_path=save_path, log_path=log_path, num_epochs=conf.epochs, countClasses = conf.countClasses, hotEncoded = conf.hotEncoded)
 
     listener()
+    
+    print("node end")
     
