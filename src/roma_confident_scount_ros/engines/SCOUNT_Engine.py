@@ -18,8 +18,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import colors
 # from torch.nn.modules.batchnorm import BatchNorm1d
-from util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
-from engines.base_engine import base_engine
+#from util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
+from roma_confident_scount_ros.util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
+from roma_confident_scount_ros.engines.base_engine import base_engine
 
 #countingClasses = 4
 #hotEncoded = True
@@ -171,7 +172,8 @@ class SCOUNT_Engine(base_engine):
     def loadNetwork(self, path):
         #torch.save(self.model.state_dict(), ('%s/seed_%d_best_checkpoint' % (self.save_path, self.seed)))
         print("Loading network")
-        self.model.load_state_dict(torch.load(path))
+        #self.model.load_state_dict(torch.load(path))
+        self.model.load_state_dict(torch.load(path, map_location='cpu'))#, pickle_module=pickle, **pickle_load_args))
         #self.model.load_state_dict(torch.load('/home/mrs/git/WS-COUNT/models/seed_1_best_checkpoint.pth'))
         #print(torch.load('/home/cscarbone/git/WS-COUNT/models/seed_1_best_checkpoint.pth'))
         print("Network loaded")

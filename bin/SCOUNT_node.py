@@ -2,16 +2,15 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import String
+import rospkg
 
 
-from dataset.fruit_count_dataset import FruitCounting
+#from dataset.fruit_count_dataset import FruitCounting
 #from scripts.dataset.fruit_count_dataset import FruitCounting
-#from fruit_count_dataset import FruitCounting
-#from scripts.models.SCOUNT import SCOUNT
-#from scripts.engines.SCOUNT_Engine import SCOUNT_Engine
-#from roma_confident_scount_ros.configs import configs
-#from configs import configs
-#import configs
+from roma_confident_scount_ros.dataset.fruit_count_dataset import FruitCounting
+from roma_confident_scount_ros.models.SCOUNT import SCOUNT
+from roma_confident_scount_ros.engines.SCOUNT_Engine import SCOUNT_Engine
+from roma_confident_scount_ros.configs import configs
 import torch
 
 '''
@@ -64,11 +63,17 @@ if __name__ == '__main__':
 
     # subsampled_dim1 and subsampled_dim2 are width_img/32 and height_img/32 approximate by excess
     model = SCOUNT(num_classes=1, num_maps=8, subsampled_dim1=conf.subsampled_dim1,
-                   subsampled_dim2=conf.subsampled_dim2)
+                   subsampled_dim2=conf.subsampled_dim2, countClasses = conf.countClasses, hotEncoded = conf.hotEncoded)
+    
     engine = SCOUNT_Engine(model=model, train_set=train_set, validation_set=test_set, test_set=test_set, seed=1,
                            batch_size=5, save_path=save_path, log_path=log_path, num_epochs=conf.epochs, countClasses = conf.countClasses, hotEncoded = conf.hotEncoded)
+    
+    #listener()
+    rospack = rospkg.RosPack()
+    networkPath = (rospack.get_path('roma_confident_scount_ros')) + "/test.pth"
 
-    listener()
+    
+    engine.loadNetwork(networkPath)
     
     print("node end")
     
