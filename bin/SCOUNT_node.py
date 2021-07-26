@@ -13,8 +13,9 @@ from roma_confident_scount_ros.engines.SCOUNT_Engine import SCOUNT_Engine
 from roma_confident_scount_ros.configs import configs
 import torch
 
-'''
+
 def callback(data):
+    print("callback loop")
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
     
 def handle_add_two_ints(req):
@@ -28,13 +29,17 @@ def listener():
     # anonymous=True flag means that rospy will choose a unique
     # name for our 'listener' node so that multiple listeners can
     # run simultaneously.
-    rospy.init_node('listener', anonymous=True)
+    
+    print("loop start")
+    rospy.init_node('counting_network_node', anonymous=True)
 
     rospy.Subscriber("chatter", String, callback)
     
+    engine.doSingleClassification() 
+    
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
- '''   
+    
     
     
 
@@ -66,14 +71,19 @@ if __name__ == '__main__':
                    subsampled_dim2=conf.subsampled_dim2, countClasses = conf.countClasses, hotEncoded = conf.hotEncoded)
     
     engine = SCOUNT_Engine(model=model, train_set=train_set, validation_set=test_set, test_set=test_set, seed=1,
-                           batch_size=5, save_path=save_path, log_path=log_path, num_epochs=conf.epochs, countClasses = conf.countClasses, hotEncoded = conf.hotEncoded)
+                           batch_size=1, save_path=save_path, log_path=log_path, num_epochs=conf.epochs, countClasses = conf.countClasses, hotEncoded = conf.hotEncoded)
     
-    #listener()
+
     rospack = rospkg.RosPack()
     networkPath = (rospack.get_path('roma_confident_scount_ros')) + "/test.pth"
 
-    
     engine.loadNetwork(networkPath)
+
+    #engine.test_net()
+    
+    print('node loop starting')
+    
+    listener()
     
     print("node end")
     

@@ -11,7 +11,12 @@ import torch.nn as nn
 # from wildcat.car import CarCounting
 # from wildcat.person import PersonCounting
 
-# import torchvision.transforms as transforms
+import csv
+#import cv2
+import os
+import os.path
+
+import torchvision.transforms as transforms
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
 import numpy as np
@@ -21,6 +26,7 @@ from matplotlib import colors
 #from util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
 from roma_confident_scount_ros.util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
 from roma_confident_scount_ros.engines.base_engine import base_engine
+from PIL import Image
 
 #countingClasses = 4
 #hotEncoded = True
@@ -52,6 +58,20 @@ class SCOUNT_Engine(base_engine):
         self.hotEncoded = hotEncoded
 
         self.validation_error_diagonal = -1
+        
+        #self.transform # = transforms.ToTensor()
+        
+        image_normalization_mean = [0.485, 0.456, 0.406]
+        image_normalization_std = [0.229, 0.224, 0.225]
+        # image_normalization_mean = [0.45, 0.45, 0.45]
+        # image_normalization_std = [0.22, 0.22, 0.22]
+        normalize = transforms.Normalize(mean=image_normalization_mean,
+                                         std=image_normalization_std)
+        
+        self.transform = transforms.Compose([
+            transforms.ToTensor(),
+            normalize
+        ])
 
     def train_net(self
                   # train_set_,
@@ -177,6 +197,7 @@ class SCOUNT_Engine(base_engine):
         #self.model.load_state_dict(torch.load('/home/mrs/git/WS-COUNT/models/seed_1_best_checkpoint.pth'))
         #print(torch.load('/home/cscarbone/git/WS-COUNT/models/seed_1_best_checkpoint.pth'))
         print("Network loaded")
+
 
     def validate_current_model(self, val_loader):
         self.model.eval()
@@ -314,11 +335,11 @@ class SCOUNT_Engine(base_engine):
             # get the inputs
             inputs_datas, labels = data
             inputs, img_names = inputs_datas
-            '''
+            
             print("datas")
             print(inputs.shape)
-            print(img_names)
-            '''
+            print(type(inputs))
+            
             # wrap them in Variable
             if self.on_GPU:
                 inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
@@ -499,6 +520,68 @@ class SCOUNT_Engine(base_engine):
         # get matrix with absolute values        
 
         plt.show()
+
+
+
+    def doSingleClassification(self):
+        
+        print("Classifying")
+        '''
+        # get the inputs
+        inputs_datas, labels = data
+        inputs, img_names = inputs_datas
+        
+        print("datas")
+        print(inputs.shape)
+        print(img_names)
+        
+        # wrap them in Variable
+        if self.on_GPU:
+            inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
+        else:
+            inputs, labels = Variable(inputs), Variable(labels)
+
+        # forward
+
+        #print(outputs)
+        # convert back to a numpy array
+        if self.on_GPU:
+            outputs = outputs.data.cpu().numpy()
+            labels = labels.data.cpu().numpy()
+        else:
+            outputs = outputs.data.numpy()
+            labels = labels.data.numpy()
+        '''
+        
+        
+        #img = Image.open(os.path.join(self.path_images, path + imageFormat)).convert('RGB')
+        #new_shape = (resize_height,resize_width)
+        #img = cv2.resize(img, new_shape, interpolation=cv2.INTER_LINEAR)
+        
+
+        
+        imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_600/devkit/JPEGImages/1_1_5.jpg"
+        img = Image.open(os.path.join(imgPath)).convert('RGB')
+        
+        if self.transform is not None:
+            img = self.transform(img)
+            img = img.unsqueeze(0)
+            
+            print('img')
+            print(img.shape)
+            print(img)
+
+            output = self.model.forward(img)
+            
+            print("img classified")
+            print(output)
+
+
+
+
+
+
+
 
 
 

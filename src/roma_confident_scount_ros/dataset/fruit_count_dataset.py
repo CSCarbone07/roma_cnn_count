@@ -141,6 +141,9 @@ class FruitCounting(data.Dataset):
         img = Image.open(os.path.join(self.path_images, path + imageFormat)).convert('RGB')
         #new_shape = (resize_height,resize_width)
         #img = cv2.resize(img, new_shape, interpolation=cv2.INTER_LINEAR)
+        print("getting image")
+        print(img.shape)
+        print(img)
         if self.transform is not None:
             img = self.transform(img)
         if self.target_transform is not None:
@@ -185,13 +188,17 @@ class FruitClassificationCnt(data.Dataset):
         # self.classes = object_categories
         self.images = read_object_labels_csv(file_csv)
 
-        print('[dataset] ALMOND counting set=%s number of images=%d' % (
+        print('[dataset] counting set=%s number of images=%d' % (
               set,
               len(self.images)))
 
     def __getitem__(self, index):
         path, target_count = self.images[index]
         img = Image.open(os.path.join(self.path_images, path + imageFormat)).convert('RGB')
+
+        print("getting image")
+        print(img.shape)
+        print(img)
 
         target_class = torch.FloatTensor([0.0])
         if (torch.autograd.Variable(target_count)).data[0] > 0:
