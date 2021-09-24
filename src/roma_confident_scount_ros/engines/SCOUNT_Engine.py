@@ -568,13 +568,13 @@ class SCOUNT_Engine(base_engine):
             img = img.unsqueeze(0)
             
             print('img')
-            print(img.shape)
-            print(img)
+            #print(img.shape)
+            #print(img)
 
             output = self.model.forward(img)
             
             print("img classified")
-            print(output)
+            #print(output)
 
 
 
