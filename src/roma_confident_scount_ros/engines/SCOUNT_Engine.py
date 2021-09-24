@@ -568,14 +568,16 @@ class SCOUNT_Engine(base_engine):
             img = img.unsqueeze(0)
             
             print('img')
-            #print(img.shape)
+            print(img.shape)
             #print(img)
+            #TODO the image shape is causing the node to crash, compare to original code to see the
+            #difference 
 
             output = self.model.forward(img)
             
             print("img classified")
             #print(output)
-
+        
 
 
 

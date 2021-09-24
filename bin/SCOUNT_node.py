@@ -30,11 +30,12 @@ def listener():
     # name for our 'listener' node so that multiple listeners can
     # run simultaneously.
     
-    print("loop start")
+    print("Listener loop start")
     rospy.init_node('counting_network_node', anonymous=True)
 
     rospy.Subscriber("chatter", String, callback)
     
+    print("Subscription done")
     engine.doSingleClassification() 
     
     # spin() simply keeps python from exiting until this node is stopped
