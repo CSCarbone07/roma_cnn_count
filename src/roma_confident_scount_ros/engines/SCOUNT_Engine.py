@@ -35,7 +35,7 @@ from PIL import Image
 class SCOUNT_Engine(base_engine):
 
     def __init__(self, model, train_set=None, validation_set=None, test_set=None, seed=123, batch_size=4,
-                 workers=4, on_GPU=False, save_path='', log_path='', lr=0.0001, lrp=0.1,
+                 workers=4, on_GPU=True, save_path='', log_path='', lr=0.0001, lrp=0.1,
                  momentum=0.9, weight_decay=1e-4, num_epochs=50, countClasses = 4, hotEncoded = True):
         super(SCOUNT_Engine, self).__init__()
 
@@ -57,21 +57,14 @@ class SCOUNT_Engine(base_engine):
         self.countClasses = countClasses
         self.hotEncoded = hotEncoded
 
+        self.transform = None
+
+        self.useMultiGPU = True
+        self.device_ids = [0, 1, 2, 3]
+
+        print("Count classes ", countClasses)
+
         self.validation_error_diagonal = -1
-        
-        #self.transform # = transforms.ToTensor()
-        
-        image_normalization_mean = [0.485, 0.456, 0.406]
-        image_normalization_std = [0.229, 0.224, 0.225]
-        # image_normalization_mean = [0.45, 0.45, 0.45]
-        # image_normalization_std = [0.22, 0.22, 0.22]
-        normalize = transforms.Normalize(mean=image_normalization_mean,
-                                         std=image_normalization_std)
-        
-        self.transform = transforms.Compose([
-            transforms.ToTensor(),
-            normalize
-        ])
 
     def train_net(self
                   # train_set_,
@@ -93,7 +86,11 @@ class SCOUNT_Engine(base_engine):
         # load model
         self.model = self.model.train()
         if self.on_GPU:
-            self.model = self.model.cuda()
+            if self.useMultiGPU:
+                model = torch.nn.DataParallel(self.model, device_ids=self.device_ids).cuda()
+            else:
+                self.model = self.model.cuda()
+
 
         # define optimizer
         optimizer = torch.optim.SGD(self.model.get_config_optim(self.lr, self.lrp),
@@ -135,12 +132,12 @@ class SCOUNT_Engine(base_engine):
 
                 # forward + backward + optimize
                 outputs = self.model.forward(inputs)
-                
+                '''
                 print('outputs')
                 print(outputs)
                 print('labels')
                 print(labels)
-                
+                '''
                 loss = criterion(outputs, labels)
                 loss.backward()
                 optimizer.step()
@@ -192,12 +189,10 @@ class SCOUNT_Engine(base_engine):
     def loadNetwork(self, path):
         #torch.save(self.model.state_dict(), ('%s/seed_%d_best_checkpoint' % (self.save_path, self.seed)))
         print("Loading network")
-        #self.model.load_state_dict(torch.load(path))
-        self.model.load_state_dict(torch.load(path, map_location='cpu'))#, pickle_module=pickle, **pickle_load_args))
+        self.model.load_state_dict(torch.load(path))
         #self.model.load_state_dict(torch.load('/home/mrs/git/WS-COUNT/models/seed_1_best_checkpoint.pth'))
         #print(torch.load('/home/cscarbone/git/WS-COUNT/models/seed_1_best_checkpoint.pth'))
         print("Network loaded")
-
 
     def validate_current_model(self, val_loader):
         self.model.eval()
@@ -338,7 +333,7 @@ class SCOUNT_Engine(base_engine):
             
             print("datas")
             print(inputs.shape)
-            print(type(inputs))
+            print(img_names)
             
             # wrap them in Variable
             if self.on_GPU:
@@ -403,9 +398,7 @@ class SCOUNT_Engine(base_engine):
                             print(confusionCount)
                             print(confusionMatrix)
                 
-                for o in range(confusionMatrix.shape[0]):
-                    for c in range(confusionMatrix.shape[1]):
-                        confusionMatrix[o][c] /= confusionCount[c]
+
                     
                             
             else:
@@ -429,6 +422,8 @@ class SCOUNT_Engine(base_engine):
 
                     #print("pred")
                     #print(pred)
+                    
+                    
 
         val_errors = np.array(val_errors)
         predictions = np.array(predictions)
@@ -436,6 +431,10 @@ class SCOUNT_Engine(base_engine):
         
         if self.hotEncoded:
             val_errors_diagonal = np.array(val_errors_diagonal)
+            
+            for o in range(confusionMatrix.shape[0]):
+                for c in range(confusionMatrix.shape[1]):
+                    confusionMatrix[o][c] /= confusionCount[c]
 
         print(val_errors.shape)
 
@@ -560,23 +559,38 @@ class SCOUNT_Engine(base_engine):
         
 
         
-        imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_600/devkit/JPEGImages/1_1_5.jpg"
+        imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_02/devkit/JPEGImages/1_1_0_1.jpg"
         img = Image.open(os.path.join(imgPath)).convert('RGB')
-        
+       
+        print("image loaded")        
+
         if self.transform is not None:
             img = self.transform(img)
             img = img.unsqueeze(0)
             
-            print('img')
-            print(img.shape)
-            #print(img)
-            #TODO the image shape is causing the node to crash, compare to original code to see the
-            #difference 
-
-            output = self.model.forward(img)
+        print('img')
+        #print(img.shape)
+        #print(img)
+        #difference 
             
-            print("img classified")
-            #print(output)
+        
+        convert_tensor = transforms.ToTensor() 
+        tensor_img = convert_tensor(img)
+        tensor_img = tensor_img.unsqueeze(0)
+        
+        tensor_img[0,0] = "dummy_name"
+
+        print("data loaded")
+        print(tensor_img.shape)
+        print(tensor_img)
+        #TODO the tensor is causing the node to crash, compare to original code to see the
+        # currently = torch.Size([1, 3, 300, 300])
+        # in original = torch.Size([1, 3, 300, 300])
+        # the problem seems to be with the "type" of variables
+        output = self.model.forward(convert_tensor)
+        
+        print("img classified")
+        #print(output)
         
 
 

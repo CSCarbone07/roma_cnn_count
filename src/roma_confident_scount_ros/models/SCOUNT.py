@@ -20,6 +20,8 @@ class SCOUNT(BaseModel):
 
         self.countClasses = countClasses
         self.hotEncoded = hotEncoded
+        
+        print("model count classes ", countClasses)
 
         model = models.resnet101(True)
 
@@ -34,13 +36,16 @@ class SCOUNT(BaseModel):
                                       model.layer3,
                                       model.layer4
                                       )
-
-        # classification layer
+        self.features = nn.DataParallel(self.features)
+        
+	# classification layer
         num_features = model.layer4[1].conv1.in_channels
         self.classifier = nn.Sequential(
             nn.Conv2d(num_features, num_classes*num_maps, kernel_size=1, stride=1, padding=0, bias=True)
                       , nn.BatchNorm2d(num_classes*num_maps)
                       , nn.ReLU(inplace=True))
+
+        self.classifier = nn.DataParallel(self.classifier)
 
         # counter regressor, composed of fully connected layers
         self.fcs_input = subsampled_dim1*subsampled_dim2*num_maps*num_classes
@@ -60,6 +65,7 @@ class SCOUNT(BaseModel):
                                            nn.Linear(1000, self.countClasses),
                                            nn.Softmax(dim=1)
                                            )
+            self.regressor = nn.DataParallel(self.regressor)
         else:
             self.regressor = nn.Sequential(
                                            nn.Linear(self.fcs_input, 1000),
