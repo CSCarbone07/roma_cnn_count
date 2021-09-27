@@ -3,6 +3,7 @@ import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
+from PIL import Image
 import rospkg
 
 
@@ -15,6 +16,7 @@ from roma_confident_scount_ros.configs import configs
 import torch
 
 
+bridge = CvBridge()
 
 def callback(data):
     print("callback loop")
@@ -24,7 +26,9 @@ def callback_image(data):
     print("callback image loop")
     try:
       cv_image = bridge.imgmsg_to_cv2(data, "bgr8")
-      engine.doSingleClassification(cv_image) 
+      #cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+      #img_pil = Image.fromarray(cv_image)
+
     except CvBridgeError as e:
       print(e)
 
@@ -50,7 +54,7 @@ def listener():
     rospy.Subscriber("/pylon_camera_node/image_raw", Image, callback_image)
 
     print("Subscription done")
-    #engine.doSingleClassification() 
+    engine.doSingleClassification() 
     
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
@@ -61,7 +65,6 @@ def listener():
 if __name__ == '__main__':
 
     print("starting scount node")
-    bridge = CvBridge()
     
     torch.set_printoptions(edgeitems=800)
     

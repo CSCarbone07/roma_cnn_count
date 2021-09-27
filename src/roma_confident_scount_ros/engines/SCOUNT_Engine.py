@@ -12,7 +12,7 @@ import torch.nn as nn
 # from wildcat.person import PersonCounting
 
 import csv
-#import cv2
+import cv2
 import os
 import os.path
 
@@ -526,23 +526,29 @@ class SCOUNT_Engine(base_engine):
 
 
 
-    def doSingleClassification(self):
+    def doSingleClassification(self, inImage):
         
         print("Classifying")
 
         self.model.eval()
- 
-        
-        #img = Image.open(os.path.join(self.path_images, path + imageFormat)).convert('RGB')
-        #new_shape = (resize_height,resize_width)
-        #img = cv2.resize(img, new_shape, interpolation=cv2.INTER_LINEAR)
-        
+  
 
         
         #imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_02/devkit/JPEGImages/1_1_0_1.jpg"
         imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_600/devkit/JPEGImages/99_9_8.jpg"
         img = Image.open(os.path.join(imgPath)).convert('RGB')
-       
+
+        cv_image = cv2.cvtColor(inImage, cv2.COLOR_BGR2RGB)
+
+        resize_height = 300
+        resize_width = 300
+
+        new_shape = (resize_height,resize_width)
+        cv_image = cv2.resize(cv_image, new_shape, interpolation=cv2.INTER_LINEAR)
+        
+        img = Image.fromarray(cv_image)
+
+
         print("image loaded")        
 
         # image normalization
@@ -562,10 +568,9 @@ class SCOUNT_Engine(base_engine):
 
 
             
-        print('img')
+        #print('img')
         #print(img.shape)
-        print(img)
-        #difference 
+        #print(img)
             
         
         #convert_tensor = transforms.ToTensor() 
