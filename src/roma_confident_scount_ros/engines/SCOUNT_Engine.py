@@ -540,6 +540,11 @@ class SCOUNT_Engine(base_engine):
 
         cv_image = cv2.cvtColor(inImage, cv2.COLOR_BGR2RGB)
 
+        cv_image = cv_image[400:800, 600:1000]
+
+        #cv2.imshow("cropped", cv_image)
+        #cv2.waitKey(0)
+
         resize_height = 300
         resize_width = 300
 
