@@ -13,7 +13,7 @@ from roma_confident_scount_ros.models.base_model import BaseModel
 
 class SCOUNT(BaseModel):
 
-    def __init__(self, num_classes, num_maps, subsampled_dim1, subsampled_dim2, countClasses = 4, hotEncoded = True):
+    def __init__(self, num_classes, num_maps, subsampled_dim1, subsampled_dim2, countClasses = 8, hotEncoded = True):
         super(SCOUNT, self).__init__()
         self.subsampled_dim1 = subsampled_dim1
         self.subsampled_dim2 = subsampled_dim2
@@ -100,6 +100,7 @@ class SCOUNT(BaseModel):
         '''
 
         x = x.view(-1, self.num_flat_features(x))
+       
         '''
         print("viewer")
         print(x.shape)

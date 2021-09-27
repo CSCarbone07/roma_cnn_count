@@ -26,6 +26,7 @@ from matplotlib import colors
 #from util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
 from roma_confident_scount_ros.util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
 from roma_confident_scount_ros.engines.base_engine import base_engine
+from roma_confident_scount_ros.dataset.fruit_count_dataset import FruitCounting
 from PIL import Image
 
 #countingClasses = 4
@@ -35,7 +36,7 @@ from PIL import Image
 class SCOUNT_Engine(base_engine):
 
     def __init__(self, model, train_set=None, validation_set=None, test_set=None, seed=123, batch_size=4,
-                 workers=4, on_GPU=True, save_path='', log_path='', lr=0.0001, lrp=0.1,
+                 workers=4, on_GPU=False, save_path='', log_path='', lr=0.0001, lrp=0.1,
                  momentum=0.9, weight_decay=1e-4, num_epochs=50, countClasses = 4, hotEncoded = True):
         super(SCOUNT_Engine, self).__init__()
 
@@ -189,7 +190,8 @@ class SCOUNT_Engine(base_engine):
     def loadNetwork(self, path):
         #torch.save(self.model.state_dict(), ('%s/seed_%d_best_checkpoint' % (self.save_path, self.seed)))
         print("Loading network")
-        self.model.load_state_dict(torch.load(path))
+        #self.model.load_state_dict(torch.load(path))
+        self.model.load_state_dict(torch.load(path, map_location='cpu'))#, pickle_module=pickle, **pickle_load_args))
         #self.model.load_state_dict(torch.load('/home/mrs/git/WS-COUNT/models/seed_1_best_checkpoint.pth'))
         #print(torch.load('/home/cscarbone/git/WS-COUNT/models/seed_1_best_checkpoint.pth'))
         print("Network loaded")
@@ -330,9 +332,12 @@ class SCOUNT_Engine(base_engine):
             # get the inputs
             inputs_datas, labels = data
             inputs, img_names = inputs_datas
+        
             
             print("datas")
             print(inputs.shape)
+            print(torch.tensor(inputs).dtype)
+            #print(inputs)
             print(img_names)
             
             # wrap them in Variable
@@ -380,7 +385,7 @@ class SCOUNT_Engine(base_engine):
                         labels_list.append(lab)
 
                         if lab == 1:
-                            print("confusion matrix")
+                            #print("confusion matrix")
                             confusionCount[c] += 1
                             #print(np.amax(outputs[b]))
 
@@ -391,12 +396,12 @@ class SCOUNT_Engine(base_engine):
                             val_errors_diagonal.append(err) 
 
                             classPredicted = np.where(outputs[b] == np.amax(outputs[b]))[0][0]
-                            print(classPredicted)
+                            #print(classPredicted)
                             confusionClassification[classPredicted][c] += 1
 
 
-                            print(confusionCount)
-                            print(confusionMatrix)
+                            #print(confusionCount)
+                            #print(confusionMatrix)
                 
 
                     
@@ -515,8 +520,7 @@ class SCOUNT_Engine(base_engine):
                     plt.gca().text(y, x, int(confusionClassification[x][y]), horizontalalignment='center', verticalalignment='center', fontsize=8);
 
 
-        # get RSME per class
-        # get matrix with absolute values        
+        # get RSME per class get matrix with absolute values        
 
         plt.show()
 
@@ -525,33 +529,9 @@ class SCOUNT_Engine(base_engine):
     def doSingleClassification(self):
         
         print("Classifying")
-        '''
-        # get the inputs
-        inputs_datas, labels = data
-        inputs, img_names = inputs_datas
-        
-        print("datas")
-        print(inputs.shape)
-        print(img_names)
-        
-        # wrap them in Variable
-        if self.on_GPU:
-            inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
-        else:
-            inputs, labels = Variable(inputs), Variable(labels)
 
-        # forward
-
-        #print(outputs)
-        # convert back to a numpy array
-        if self.on_GPU:
-            outputs = outputs.data.cpu().numpy()
-            labels = labels.data.cpu().numpy()
-        else:
-            outputs = outputs.data.numpy()
-            labels = labels.data.numpy()
-        '''
-        
+        self.model.eval()
+ 
         
         #img = Image.open(os.path.join(self.path_images, path + imageFormat)).convert('RGB')
         #new_shape = (resize_height,resize_width)
@@ -559,49 +539,71 @@ class SCOUNT_Engine(base_engine):
         
 
         
-        imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_02/devkit/JPEGImages/1_1_0_1.jpg"
+        #imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_02/devkit/JPEGImages/1_1_0_1.jpg"
+        imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_600/devkit/JPEGImages/99_9_8.jpg"
         img = Image.open(os.path.join(imgPath)).convert('RGB')
        
         print("image loaded")        
 
-        if self.transform is not None:
-            img = self.transform(img)
-            img = img.unsqueeze(0)
+        # image normalization
+        image_normalization_mean = [0.485, 0.456, 0.406]
+        image_normalization_std = [0.229, 0.224, 0.225]
+        # image_normalization_mean = [0.45, 0.45, 0.45]
+        # image_normalization_std = [0.22, 0.22, 0.22]
+        normalize = transforms.Normalize(mean=image_normalization_mean,
+                                         std=image_normalization_std)
+            
+        myImageTransform = transforms.Compose([
+                transforms.ToTensor(),
+                normalize
+            ])
+       
+        tensor_img = myImageTransform(img)
+
+
             
         print('img')
         #print(img.shape)
-        #print(img)
+        print(img)
         #difference 
             
         
-        convert_tensor = transforms.ToTensor() 
-        tensor_img = convert_tensor(img)
+        #convert_tensor = transforms.ToTensor() 
+        #tensor_img = convert_tensor(img)
+        #tensor_img = tensor_img.int()
+        #tensor_img = torch.as_tensor(img, dtype=int)
+        #print(torch.Tensor(tensor_img).dtype)
+        #print(tensor_img)
         tensor_img = tensor_img.unsqueeze(0)
-        
-        tensor_img[0,0] = "dummy_name"
+        output = self.model.forward(tensor_img)
+      
+        print(output)
 
-        print("data loaded")
-        print(tensor_img.shape)
-        print(tensor_img)
-        #TODO the tensor is causing the node to crash, compare to original code to see the
-        # currently = torch.Size([1, 3, 300, 300])
-        # in original = torch.Size([1, 3, 300, 300])
-        # the problem seems to be with the "type" of variables
-        output = self.model.forward(convert_tensor)
+        '''        
+        # Steps necessary to load image in the same way as the testing function
+        inImg = FruitCounting(root='/home/cscarbone/mrs_carbone/src/roma_confident_scount_ros/inData/',
+                             set='test')
+
+
+        test_dataset, test_loader = init_dataset(inImg, train=False, batch_size=1, workers=self.workers)
+        val_loader = tqdm(test_loader, desc='Testing')
+        for i, data in enumerate(val_loader):
+
+            # get the inputs
+            inputs_datas, labels = data
+            inputs, img_names = inputs_datas
+            
+            print("in image datas")
+            print(inputs.shape)
+            print(torch.tensor(inputs).dtype)
+            #print(inputs)
+            print(img_names)
+
+            output = self.model.forward(inputs)
+            print(output)
+        '''
+
         
         print("img classified")
         #print(output)
         
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -31,7 +31,7 @@ def create_object_count_labels_csv(root, dataset, set, file_csv):
 
     img_list_txt = os.path.join(root, 'devkit', dataset, 'ImageSets', 'Main', '%s.txt' % (set))
     print("creating object count labels csv")    
-    print(img_list_txt)
+    #print(img_list_txt)
     with open(img_list_txt, 'r') as rf:
         lines = rf.readlines()
     text_file = open(file_csv, "w")
@@ -44,7 +44,7 @@ def create_object_count_labels_csv(root, dataset, set, file_csv):
             if not conf.hotEncoded:
                 data = data[1:]
             img_name = filename[len(path_labels) + 1:-4]
-            print(data)
+            #print(data)
             if data[0] == '\n':
                 count = 0
             else:    
@@ -87,7 +87,7 @@ def read_object_labels_csv(file, header=True):
                     labels[int(row[1:num_categories + 1][0])] = 1
                 else:                
                     labels = (np.asarray(row[1:num_categories + 1])).astype(np.float32)
-                print(labels)
+                #print(labels)
                 #print("labels")
                 labels = torch.from_numpy(labels)                
                 item = (name, labels)
@@ -116,7 +116,7 @@ class FruitCounting(data.Dataset):
         path_csv = os.path.join(self.root, 'files')
         # define filename of csv file
         file_csv = os.path.join(path_csv, 'counting_' + set + '.csv')
-        print(file_csv)
+        #print(file_csv)
         # create the csv file if necessary
         if not os.path.exists(file_csv):
             print("file_csv not found at: " + file_csv)
@@ -124,7 +124,7 @@ class FruitCounting(data.Dataset):
                 os.makedirs(path_csv)
             # generate csv file
             # labeled_data = read_object_labels(self.root, 'ALMOND', self.set)
-            print(file_csv)
+            #print(file_csv)
             create_object_count_labels_csv(self.root, '', self.set, file_csv)
             # write csv file
             # write_object_labels_csv(file_csv, labeled_data)
@@ -141,9 +141,9 @@ class FruitCounting(data.Dataset):
         img = Image.open(os.path.join(self.path_images, path + imageFormat)).convert('RGB')
         #new_shape = (resize_height,resize_width)
         #img = cv2.resize(img, new_shape, interpolation=cv2.INTER_LINEAR)
-        print("getting image")
-        print(img.shape)
-        print(img)
+        #print("getting image")
+        #print(img.shape)
+        #print(img)
         if self.transform is not None:
             img = self.transform(img)
         if self.target_transform is not None:
@@ -196,9 +196,9 @@ class FruitClassificationCnt(data.Dataset):
         path, target_count = self.images[index]
         img = Image.open(os.path.join(self.path_images, path + imageFormat)).convert('RGB')
 
-        print("getting image")
-        print(img.shape)
-        print(img)
+        #print("getting image")
+        #print(img.shape)
+        #print(img)
 
         target_class = torch.FloatTensor([0.0])
         if (torch.autograd.Variable(target_count)).data[0] > 0:
