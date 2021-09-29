@@ -543,20 +543,26 @@ class SCOUNT_Engine(base_engine):
         cv_image = cv_image[400:800, 600:1000]
         cv_image_2 = cv_image[400:800, 600:1000]
 
+        imageSections_cv = []
+        imageSections_pil = []
+        imageSections_tsr = []
+        imageSections_cv.append(cv_image)
+        imageSections_cv.append(cv_image_2)
+
+        resize_height = 300
+        resize_width = 300
+        
+        for i_img in imageSections_cv:
+            new_shape = (resize_height,resize_width)
+            cv_image = cv2.resize(cv_image, new_shape, interpolation=cv2.INTER_LINEAR)
+            
+            img = Image.fromarray(cv_image)
+            imageSections_pil.append(img)
 
         #cv2.imshow("cropped", cv_image)
         #cv2.waitKey(0)
 
-        resize_height = 300
-        resize_width = 300
-
-        new_shape = (resize_height,resize_width)
-        cv_image = cv2.resize(cv_image, new_shape, interpolation=cv2.INTER_LINEAR)
-        
-        img = Image.fromarray(cv_image)
-
-
-        print("image loaded")        
+        print("image sectioned")        
 
         # image normalization
         image_normalization_mean = [0.485, 0.456, 0.406]
@@ -571,10 +577,13 @@ class SCOUNT_Engine(base_engine):
                 normalize
             ])
        
-        tensor_img = myImageTransform(img)
 
 
-            
+        for i_img in imageSections_pil:
+            tensor_img = myImageTransform(i_img)
+            tensor_img = tensor_img.unsqueeze(0)
+            imageSections_tsr.append(tensor_img)
+
         #print('img')
         #print(img.shape)
         #print(img)
@@ -586,10 +595,13 @@ class SCOUNT_Engine(base_engine):
         #tensor_img = torch.as_tensor(img, dtype=int)
         #print(torch.Tensor(tensor_img).dtype)
         #print(tensor_img)
-        tensor_img = tensor_img.unsqueeze(0)
-        output = self.model.forward(tensor_img)
-      
-        print(output)
+
+        
+        print("classifying")
+        for i_img in imageSections_tsr:
+            output = self.model.forward(i_img) 
+            print("classifying section")
+            print(output)
 
         '''        
         # Steps necessary to load image in the same way as the testing function
