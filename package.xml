@@ -18,6 +18,8 @@
   <depend>cv_bridge</depend>
   <depend>geometry_msgs</depend>
 
+  <depend>roma_quad_ai</depend>
+  
   <export>
 
   </export>

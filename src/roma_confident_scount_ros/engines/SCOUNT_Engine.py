@@ -540,14 +540,44 @@ class SCOUNT_Engine(base_engine):
 
         cv_image = cv2.cvtColor(inImage, cv2.COLOR_BGR2RGB)
 
-        cv_image = cv_image[400:800, 600:1000]
-        cv_image_2 = cv_image[400:800, 600:1000]
-
         imageSections_cv = []
         imageSections_pil = []
         imageSections_tsr = []
-        imageSections_cv.append(cv_image)
-        imageSections_cv.append(cv_image_2)
+
+
+        # Array for slicing points of image for 3x3, [1][x] = xAxis, [0][x] = yAxis
+        slicingPoints = np.array([[200, 400, 600, 800],[300, 600, 900, 1200]])
+        #slicingPoints = np.array([[0, 600, 1200],[0, 800, 1600]])
+
+        print("CV image")
+        print(cv_image.shape)
+        print("Slicing points")
+        print(slicingPoints.shape)
+        print(slicingPoints)
+
+        
+        for iy in range(3):
+            for ix in range(3):
+                y1 = slicingPoints[0][2-iy] 
+                y2 = slicingPoints[0][3-iy] 
+                x1 = slicingPoints[1][ix] 
+                x2 = slicingPoints[1][ix+1] 
+
+                print("Slicing at: Y[%d,%d],X[%d,%d]" % (y1, y2, x1, x2))
+                cv_image_sliced = cv_image[y1:y2,x1:x2]
+                
+                imageSections_cv.append(cv_image_sliced)
+        
+
+        # TESTING AREA: slices to test corners, first lower left corner, second upper right corner
+        #cv_image_sliced = cv_image[slicingPoints[0][1]:slicingPoints[0][2], slicingPoints[1][0]:slicingPoints[1][1]]
+        #cv_image_sliced = cv_image[slicingPoints[0][0]:slicingPoints[0][1], slicingPoints[1][1]:slicingPoints[1][2]]
+        #print(cv_image_sliced.shape)
+
+        #cv2.imshow("cropped", cv_image_sliced)
+        #cv2.waitKey(0)
+
+
 
         resize_height = 300
         resize_width = 300
@@ -559,8 +589,6 @@ class SCOUNT_Engine(base_engine):
             img = Image.fromarray(cv_image)
             imageSections_pil.append(img)
 
-        #cv2.imshow("cropped", cv_image)
-        #cv2.waitKey(0)
 
         print("image sectioned")        
 
@@ -596,13 +624,25 @@ class SCOUNT_Engine(base_engine):
         #print(torch.Tensor(tensor_img).dtype)
         #print(tensor_img)
 
-        
+        outputs = []
         print("classifying")
         for i_img in imageSections_tsr:
             output = self.model.forward(i_img) 
+            outputs.append(output)
             print("classifying section")
             print(output)
+        
+        classification = []
+        print("Merging results for sharing")
+        for out in outputs:
+            for cert in out.detach().numpy()[0]:
+                classification.append(cert)
+            print(out.detach().numpy()[0])
+            print(out)
 
+        print (classification)
+
+        
         '''        
         # Steps necessary to load image in the same way as the testing function
         inImg = FruitCounting(root='/home/cscarbone/mrs_carbone/src/roma_confident_scount_ros/inData/',
@@ -629,5 +669,5 @@ class SCOUNT_Engine(base_engine):
 
         
         print("img classified")
-        #print(output)
         
+        return classification

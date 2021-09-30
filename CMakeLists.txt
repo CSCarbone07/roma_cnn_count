@@ -6,9 +6,12 @@ project(roma_confident_scount_ros)
 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs geometry_msgs message_generation visualization_msgs image_transport roslib)#quadrotor_msgs)
 find_package(OpenCV REQUIRED)
-
+find_package(roma_quad_ai)
 #find_package(Torch REQUIRED)
 #find_package(OpenCV 3 REQUIRED)
+
+## Generate added messages and services
+#add_message_files(FILES Utility.msg)
 
 catkin_python_setup()
 
@@ -30,8 +33,6 @@ include_directories(
 
 
 
-
-
 #catkin_install_python(PROGRAMS script/SCOUNT_node.py script/dataset/fruit_count_dataset.py script/engines/SCOUNT_Engine.py  script/models/SCOUNT.py 
 #catkin_install_python(PROGRAMS src/SCOUNT_node.py src/dataset/fruit_count_dataset.py src/engines/SCOUNT_Engine.py  src/models/SCOUNT.py 
 #catkin_install_python(PROGRAMS src/SCOUNT_node.py script/dataset/fruit_count_dataset.py
@@ -41,7 +42,6 @@ catkin_install_python(PROGRAMS bin/SCOUNT_node.py
   
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-
 
 
 
