@@ -47,7 +47,7 @@ class nodeLooper():
 
     def service_image(self, req):
         print("Received request for image classification")
-        #canClassify = True
+        self.canClassify = True
         
         return TriggerResponse(success=True, message="Request received, classifying now...")
 
