@@ -40,6 +40,8 @@ class nodeLooper():
               cv_image = bridge.imgmsg_to_cv2(data, "bgr8")
               self.classification = engine.doSingleClassification(cv_image)
               self.image_classified.detectionCertainties = self.classification
+              now = rospy.get_rostime().to_sec()
+              self.image_classified.message_Time = now
             except CvBridgeError as e:
               print(e)
 
