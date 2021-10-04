@@ -536,7 +536,7 @@ class SCOUNT_Engine(base_engine):
         
         #imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_02/devkit/JPEGImages/1_1_0_1.jpg"
         imgPath = "/home/cscarbone/Dataset/counting_unity/boxes_pov_600/devkit/JPEGImages/99_9_8.jpg"
-        img = Image.open(os.path.join(imgPath)).convert('RGB')
+        #img = Image.open(os.path.join(imgPath)).convert('RGB')
 
         cv_image = cv2.cvtColor(inImage, cv2.COLOR_BGR2RGB)
 
