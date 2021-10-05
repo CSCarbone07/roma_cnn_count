@@ -21,17 +21,17 @@ import torch
 
 class nodeLooper():
     def __init__(self):
-        self.canClassify = True
+        self.canClassify = False
         self.classification = []
         self.image_classified = Utility()
 
 
     def callback(self, data):
-        print("callback loop")
+        #print("callback loop")
         rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
 
     def callback_image(self, data):
-        print("callback image loop")
+        #print("callback image loop")
 
         # This is to make the callback only work when the service does a resquest
         if self.canClassify == True:
@@ -93,7 +93,7 @@ class nodeLooper():
             #rospy.loginfo(hello_str)
             
             if self.image_classified is not None:
-                print('Publishing image classified')
+                #print('Publishing image classified')
                 pub.publish(self.image_classified)
                 
             rate.sleep() 

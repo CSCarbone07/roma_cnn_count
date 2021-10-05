@@ -546,7 +546,8 @@ class SCOUNT_Engine(base_engine):
 
 
         # Array for slicing points of image for 3x3, [1][x] = xAxis, [0][x] = yAxis
-        slicingPoints = np.array([[200, 400, 600, 800],[300, 600, 900, 1200]])
+        #slicingPoints = np.array([[200, 400, 600, 800],[300, 600, 900, 1200]])
+        slicingPoints = np.array([[105, 435, 765, 1095],[305, 635, 965, 1295]])
         #slicingPoints = np.array([[0, 600, 1200],[0, 800, 1600]])
 
         print("CV image")
