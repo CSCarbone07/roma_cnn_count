@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="quad_name" default="hummingbird"/>
+
+  <arg name="mav_name" default="$(arg quad_name)"/>
+
+
+   <group ns="uav_001">
+    <include file="$(find roma_confident_scount_ros)/launch/agent_cnn.launch">
+      <arg name="x_init" value="0"/>
+      <arg name="y_init" value="0"/>
+      <arg name="tf_prefix" value="uav_001"/>
+    </include>
+   </group>
+
+
+</launch>
