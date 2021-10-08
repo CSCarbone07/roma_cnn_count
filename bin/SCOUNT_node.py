@@ -87,7 +87,7 @@ class nodeLooper():
 
 
         print('Starting cnn node loop')
-        rate = rospy.Rate(10) # 10hz
+        rate = rospy.Rate(1) # 10hz
         while not rospy.is_shutdown():
             #hello_str = "hello world %s" % rospy.get_time()
             #rospy.loginfo(hello_str)
