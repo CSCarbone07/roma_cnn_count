@@ -11,6 +11,7 @@ class configs:
         #self.dataset_root = '/home/cscarbone/Dataset/counting_unity/boxes_pov_600/'
         #self.dataset_root = '/home/cscarbone/Dataset/counting_unity/boxes_pov_02/'
         self.dataset_root = '/home/cscarbone/mrs_carbone/src/roma_confident_scount_ros/inData/'
+        #self.dataset_root = '/home/mrs/carlos_workspace/src/roma_confident_scount_ros/inData/'
         #self.dataset_root = '/home/cscarbone/mrs_carbone/src/roma_confident_scount_ros/'
         #self.dataset_root = '/home/cscarbone/Dataset/counting_unity/sugarbeets_potatoes/'
         #self.dataset_root = '/home/mrs/Dataset/counting_unity/sugarbeets_potatoes_alt/'
