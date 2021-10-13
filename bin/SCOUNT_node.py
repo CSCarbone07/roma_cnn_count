@@ -71,8 +71,8 @@ class nodeLooper():
         rospy.init_node('counting_network_node', anonymous=True)
         
         print("Subscription done")
-        #rospy.Subscriber("chatter", String, callback)
-        rospy.Subscriber("/pylon_camera_node/image_raw", Image, self.callback_image)
+        subscriptionTopic = conf.subscribe_topic 
+        rospy.Subscriber(subscriptionTopic, Image, self.callback_image)
 
         print("Setting service")
         image_server = rospy.Service("image_classify", Trigger, self.service_image)
@@ -109,7 +109,11 @@ if __name__ == '__main__':
     
     #torch.cuda.empty_cache()
     #torch.cuda.set_per_process_memory_fraction(0.9, 0)
-
+    
+    #Force cpu even if there is a gpu available
+    torch.cuda.is_available = lambda : False
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
     conf = configs()
     dataset_root = conf.dataset_root
     save_path = conf.SCOUNT_model_path
