@@ -540,23 +540,38 @@ class SCOUNT_Engine(base_engine):
 
         cv_image = cv2.cvtColor(inImage, cv2.COLOR_BGR2RGB)
 
+        img_height = cv_image.shape[0]
+        img_width = cv_image.shape[1]
+
         imageSections_cv = []
         imageSections_pil = []
         imageSections_tsr = []
 
 
         # Array for slicing points of image for 3x3, [1][x] = xAxis, [0][x] = yAxis
-        #slicingPoints = np.array([[200, 400, 600, 800],[300, 600, 900, 1200]])
-        slicingPoints = np.array([[105, 435, 765, 1095],[305, 635, 965, 1295]])
-        #slicingPoints = np.array([[0, 600, 1200],[0, 800, 1600]])
+        # Equally distributed default camera
+        slicingPoints = np.array([[int(img_height/5), int(2*img_height/5), int(3*img_height/5),
+            int(4*img_height/5)],[int(img_width/5), int(2*img_width/5),
+            int(3*img_width/5), int(4*img_width/5)]])
+        # Basler slicing points
+        #slicingPoints = np.array([[105, 435, 765, 1095],[305, 635, 965, 1295]])
 
         print("CV image")
         print(cv_image.shape)
         print("Slicing points")
         print(slicingPoints.shape)
         print(slicingPoints)
-
+ 
+        saveSliceSample = True
+        testIdName = 0
         
+        if saveSliceSample:
+            cvTestPath = '/home/mrs/' + str(testIdName) + '.png'
+            print("Saving slice sample " + str(testIdName) + " at " + cvTestPath + " with shape ")
+            print(cv_image.shape)
+            cv2.imwrite(cvTestPath, cv_image)
+            testIdName += 1
+
         for iy in range(3):
             for ix in range(3):
                 y1 = slicingPoints[0][2-iy] 
@@ -566,9 +581,17 @@ class SCOUNT_Engine(base_engine):
 
                 print("Slicing at: Y[%d,%d],X[%d,%d]" % (y1, y2, x1, x2))
                 cv_image_sliced = cv_image[y1:y2,x1:x2]
+                print("Result shape")
+                print(cv_image_sliced.shape)
                 
                 imageSections_cv.append(cv_image_sliced)
         
+                # Save images to test if they are sliced properly
+                if saveSliceSample:
+                    cvTestPath = '/home/mrs/' + str(testIdName) + '.png'
+                    print("Saving slice sample " + str(testIdName) + " at " + cvTestPath)
+                    cv2.imwrite(cvTestPath, cv_image_sliced)
+                    testIdName += 1
 
         # TESTING AREA: slices to test corners, first lower left corner, second upper right corner
         #cv_image_sliced = cv_image[slicingPoints[0][1]:slicingPoints[0][2], slicingPoints[1][0]:slicingPoints[1][1]]
@@ -585,11 +608,12 @@ class SCOUNT_Engine(base_engine):
         
         for i_img in imageSections_cv:
             new_shape = (resize_height,resize_width)
-            cv_image = cv2.resize(cv_image, new_shape, interpolation=cv2.INTER_LINEAR)
+            cv_image_sliced_reshaped = cv2.resize(i_img, new_shape, interpolation=cv2.INTER_LINEAR)
             
-            img = Image.fromarray(cv_image)
+            img = Image.fromarray(cv_image_sliced_reshaped)
             imageSections_pil.append(img)
 
+                
 
         print("image sectioned")        
 
