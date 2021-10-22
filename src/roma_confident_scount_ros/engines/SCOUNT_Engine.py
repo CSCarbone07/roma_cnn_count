@@ -551,8 +551,8 @@ class SCOUNT_Engine(base_engine):
         # Array for slicing points of image for 3x3, [1][x] = xAxis, [0][x] = yAxis
         # Equally distributed default camera
         #slicingPoints = np.array([[int(img_height/5), int(2*img_height/5), int(3*img_height/5),
-            int(4*img_height/5)],[int(img_width/5), int(2*img_width/5),
-            int(3*img_width/5), int(4*img_width/5)]])
+            #int(4*img_height/5)],[int(img_width/5), int(2*img_width/5),
+            #int(3*img_width/5), int(4*img_width/5)]])
         # Basler slicing points
         slicingPoints = np.array([[105, 435, 765, 1095],[305, 635, 965, 1295]])
 
@@ -562,7 +562,7 @@ class SCOUNT_Engine(base_engine):
         print(slicingPoints.shape)
         print(slicingPoints)
  
-        saveSliceSample = True
+        saveSliceSample = False 
         testIdName = 0
         
         if saveSliceSample:
