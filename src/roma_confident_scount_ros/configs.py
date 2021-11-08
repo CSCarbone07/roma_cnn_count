@@ -10,7 +10,8 @@ class configs:
         #self.dataset_root = '/home/cscarbone/Dataset/counting_unity/boxes_pov/'
         #self.dataset_root = '/home/cscarbone/Dataset/counting_unity/boxes_pov_600/'
         #self.dataset_root = '/home/cscarbone/Dataset/counting_unity/boxes_pov_02/'
-        self.dataset_root = '/home/mrs/catkin_ws_fm/src/roma_confident_scount_ros/inData/'
+        #self.dataset_root = '/home/mrs/catkin_ws_fm/src/roma_confident_scount_ros/inData/'
+        self.dataset_root = '/home/cscarbone/catkin_ws_fm/src/roma_confident_scount_ros/inData/'
         #self.dataset_root = '/home/cscarbone/mrs_carbone/src/roma_confident_scount_ros/inData/'
         #self.dataset_root = '/home/mrs/carlos_workspace/src/roma_confident_scount_ros/inData/'
         #self.dataset_root = '/home/cscarbone/mrs_carbone/src/roma_confident_scount_ros/'
@@ -39,5 +40,5 @@ class configs:
         self.countClasses = 8
         
         #ROS variables
-        #self.subscribe_topic = '/pylon_camera_node/image_raw'
-        self.subscribe_topic = 'rgb'
+        self.subscribe_topic = '/pylon_camera_node/image_raw'
+        #self.subscribe_topic = 'rgb'

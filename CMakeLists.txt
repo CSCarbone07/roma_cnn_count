@@ -38,11 +38,13 @@ include_directories(
 #catkin_install_python(PROGRAMS src/SCOUNT_node.py script/dataset/fruit_count_dataset.py
 #catkin_install_python(PROGRAMS scripts/SCOUNT_node.py scripts/dataset/fruit_count_dataset.py
 #catkin_install_python(PROGRAMS src/SCOUNT_node.py src/configs.py #scripts/dataset/fruit_count_dataset.py #
-catkin_install_python(PROGRAMS bin/SCOUNT_node.py
-  
+catkin_install_python(PROGRAMS bin/SCOUNT_node.py 
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+catkin_install_python(PROGRAMS bin/SCOUNT_node_gpu_sim.py 
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 
 
