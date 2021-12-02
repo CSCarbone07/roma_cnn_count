@@ -79,20 +79,25 @@ class nodeLooper():
      
         print("SCOUNT Node setting listeners")
 
-        uav_count = 3
+        uav_count = 12
         scountListeners = []
         scountPublishers = []
         for i in range(uav_count):
             # Set listeners
-            listenTopic_image = "/uav_00" + str(i+1) + "/hummingbird/rgb"
-            listenService_request = "/uav_00" + str(i+1) + "/hummingbird/image_classify"
+            if i < 9:
+                uav_prefix = "/uav_00"
+            else:
+                uav_prefix = "/uav_0"
+
+            listenTopic_image = uav_prefix + str(i+1) + "/hummingbird/rgb"
+            listenService_request = uav_prefix + str(i+1) + "/hummingbird/image_classify"
             newListener = ScountListener(inListenTopic_image = listenTopic_image,
                     inServiceTopic_request = listenService_request )
             scountListeners.append(newListener) 
             #scountListeners[i].request_image()      #FOR TESTING
      
             # Set publishers
-            publishTopic_classified = "/uav_00" + str(i+1) + "/hummingbird/image_classified"
+            publishTopic_classified = uav_prefix + str(i+1) + "/hummingbird/image_classified"
             newPublisher = ScountPublisher(inPublish_classified = publishTopic_classified)
             scountPublishers.append(newPublisher)
 
