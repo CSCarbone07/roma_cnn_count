@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>roma_agroSwarm_cnn_confidenceCounting</name>
+  <name>roma_cnn_count</name>
   <version>0.0.1</version>
   <description>ROS node to control drones</description>
 
@@ -18,7 +18,7 @@
   <depend>cv_bridge</depend>
   <depend>geometry_msgs</depend>
 
-  <depend>roma_agroSwarm_quadAI</depend>
+  <depend>roma_quad_ai</depend>
   
   <export>
 
