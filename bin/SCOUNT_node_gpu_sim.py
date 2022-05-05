@@ -79,7 +79,7 @@ class nodeLooper():
      
         print("SCOUNT Node setting listeners")
 
-        uav_count = 12
+        uav_count = 9
         scountListeners = []
         scountPublishers = []
         for i in range(uav_count):

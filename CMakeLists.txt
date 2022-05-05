@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(roma_confident_scount_ros)
+project(roma_agroSwarm_cnn_confidenceCounting)
 
 #set(Torch_DIR ".local/lib/python3.6/site-packages/torch/share/cmake/Torch")
 #set(Torch_DIR "git/pytorch")
