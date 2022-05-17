@@ -32,5 +32,5 @@ if __name__ == "__main__":
                            batch_size=1, save_path=save_path, log_path=log_path, num_epochs=conf.epochs, countClasses = conf.countClasses, hotEncoded = conf.hotEncoded)
     #results = engine.train_net()
     #engine.loadNetwork('/home/cscarbone/git/roma_confident_scount/models/seed_1_best_checkpoint.pth')
-    engine.loadNetwork('/home/cscarbone/mrs_carbone/src/roma_confident_scount_ros/test.pth')
+    engine.loadNetwork('/home/cscarbone/mrs_carbone/src/roma_cnn_count/test.pth')
     engine.test_net()

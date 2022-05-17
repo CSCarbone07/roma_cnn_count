@@ -24,9 +24,9 @@ from matplotlib import pyplot as plt
 from matplotlib import colors
 # from torch.nn.modules.batchnorm import BatchNorm1d
 #from util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
-from roma_confident_scount_ros.util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
-from roma_confident_scount_ros.engines.base_engine import base_engine
-from roma_confident_scount_ros.dataset.fruit_count_dataset import FruitCounting
+from roma_cnn_count.util import conditioned_rmse, interval_rmse, init_dataset, set_seeds
+from roma_cnn_count.engines.base_engine import base_engine
+from roma_cnn_count.dataset.fruit_count_dataset import FruitCounting
 from PIL import Image
 
 #countingClasses = 4
@@ -670,7 +670,7 @@ class SCOUNT_Engine(base_engine):
         
         '''        
         # Steps necessary to load image in the same way as the testing function
-        inImg = FruitCounting(root='/home/cscarbone/mrs_carbone/src/roma_confident_scount_ros/inData/',
+        inImg = FruitCounting(root='/home/cscarbone/mrs_carbone/src/roma_cnn_count/inData/',
                              set='test')
 
 

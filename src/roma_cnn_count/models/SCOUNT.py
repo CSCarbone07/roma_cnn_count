@@ -5,7 +5,7 @@ import torch.nn as nn
 # import torch.nn.functional as F
 import torchvision.models as models
 #from models.base_model import BaseModel
-from roma_confident_scount_ros.models.base_model import BaseModel
+from roma_cnn_count.models.base_model import BaseModel
 
 #countingClasses = 4
 #hotEncoded = True

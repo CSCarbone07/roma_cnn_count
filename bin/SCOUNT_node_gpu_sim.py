@@ -11,13 +11,13 @@ from roma_quad_ai.msg import Utility
 
 #from dataset.fruit_count_dataset import FruitCounting
 #from scripts.dataset.fruit_count_dataset import FruitCounting
-from roma_confident_scount_ros.dataset.fruit_count_dataset import FruitCounting
-from roma_confident_scount_ros.models.SCOUNT import SCOUNT
-from roma_confident_scount_ros.engines.SCOUNT_Engine import SCOUNT_Engine
-from roma_confident_scount_ros.configs import configs
+from roma_cnn_count.dataset.fruit_count_dataset import FruitCounting
+from roma_cnn_count.models.SCOUNT import SCOUNT
+from roma_cnn_count.engines.SCOUNT_Engine import SCOUNT_Engine
+from roma_cnn_count.configs import configs
 
-from roma_confident_scount_ros.ros.scount_listener import ScountListener 
-from roma_confident_scount_ros.ros.scount_publisher import ScountPublisher 
+from roma_cnn_count.ros.scount_listener import ScountListener 
+from roma_cnn_count.ros.scount_publisher import ScountPublisher 
 
 import torch
 
@@ -79,7 +79,7 @@ class nodeLooper():
      
         print("SCOUNT Node setting listeners")
 
-        uav_count = 9
+        uav_count = 3
         scountListeners = []
         scountPublishers = []
         for i in range(uav_count):
@@ -160,7 +160,7 @@ if __name__ == '__main__':
     
 
     rospack = rospkg.RosPack()
-    networkPath = (rospack.get_path('roma_confident_scount_ros')) + "/test.pth"
+    networkPath = (rospack.get_path('roma_cnn_count')) + "/test.pth"
 
     engine.loadNetwork(networkPath)
 

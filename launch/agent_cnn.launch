@@ -27,7 +27,7 @@
   <group ns="$(arg quad_name)" >
 
 
-    <node pkg="roma_confident_scount_ros" type="SCOUNT_node.py" name="roma_SCOUNT_node" output="screen" launch-prefix="nice -n 10">
+    <node pkg="roma_cnn_count" type="SCOUNT_node.py" name="roma_SCOUNT_node" output="screen" launch-prefix="nice -n 10">
     </node>
 
 

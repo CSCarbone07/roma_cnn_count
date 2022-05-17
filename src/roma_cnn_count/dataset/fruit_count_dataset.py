@@ -12,7 +12,7 @@ import torch
 import torch.utils.data as data
 from PIL import Image
 
-from roma_confident_scount_ros.configs import configs
+from roma_cnn_count.configs import configs
 
 #maxCount = 3
 #hotEncoded = True
