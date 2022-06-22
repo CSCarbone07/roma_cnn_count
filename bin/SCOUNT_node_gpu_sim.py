@@ -6,6 +6,7 @@ from std_srvs.srv import Trigger, TriggerResponse
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import rospkg
+#import ros/package.h
 
 from roma_quad_ai.msg import Utility
 
@@ -21,14 +22,14 @@ from roma_cnn_count.ros.scount_publisher import ScountPublisher
 
 import torch
 
-
+import yaml
 
 class nodeLooper():
     def __init__(self):
         self.canClassify = False
         self.classification = []
         self.image_classified = Utility()
-
+        self.uav_count = -2
 
     def callback(self, data):
         #print("callback loop")
@@ -79,10 +80,10 @@ class nodeLooper():
      
         print("SCOUNT Node setting listeners")
 
-        uav_count = 3
+        #self.uav_count = 1
         scountListeners = []
         scountPublishers = []
-        for i in range(uav_count):
+        for i in range(self.uav_count):
             # Set listeners
             if i < 9:
                 uav_prefix = "/uav_00"
@@ -108,7 +109,7 @@ class nodeLooper():
             #rospy.loginfo(hello_str)
 
             #print("testing")
-            for i in range(uav_count):
+            for i in range(self.uav_count):
                 inImage_cv = scountListeners[i].get_image()
                 if inImage_cv is not None:          
                     print("classifying")
@@ -160,15 +161,32 @@ if __name__ == '__main__':
     
 
     rospack = rospkg.RosPack()
-    networkPath = (rospack.get_path('roma_cnn_count')) + "/test.pth"
+    path_thisPackage = (rospack.get_path('roma_cnn_count'))
+    path_network = path_thisPackage + "/test.pth"
 
-    engine.loadNetwork(networkPath)
-
+    engine.loadNetwork(path_network)
+    
     #engine.test_net()
     
-    print('node loop starting')
+    print('creating nodeLooper')
 
     mainNode = nodeLooper()
+
+    # getting path to main package of simulator
+    path_mainPackage = (rospack.get_path('roma_quad_ai'))
+
+    config_path = path_mainPackage + "/swarm_config.yaml"; 
+    with open(config_path) as f:
+        print(config_path)
+        config = yaml.load(f, Loader=yaml.FullLoader)
+
+        mainNode.uav_count = config["num_of_agents"];
+
+    #self.uav_count = 3
+
+
+    print('node loop starting')
+
     mainNode.nodeSetup()
 
     print("node end")
