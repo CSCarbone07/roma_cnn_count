@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import rospkg
 import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool 
@@ -139,7 +140,9 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     conf = configs()
-    dataset_root = conf.dataset_root
+    thisPackage_path = rospkg.RosPack().get_path("roma_cnn_count"); 
+    print(thisPackage_path)
+    dataset_root = thisPackage_path + conf.dataset_root
     save_path = conf.SCOUNT_model_path
 
     train_set = FruitCounting(root=dataset_root,
