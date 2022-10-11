@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 import rospy    
 class configs:
@@ -11,7 +10,7 @@ class configs:
         #self.dataset_root = '/home/cscarbone/Dataset/counting_unity/boxes_pov_600/'
         #self.dataset_root = '/home/cscarbone/Dataset/counting_unity/boxes_pov_02/'
         #self.dataset_root = '/home/mrs/catkin_ws_rm/src/roma_cnn_count/inData/'
-        self.dataset_root = '/home/cscarbone/catkin_ws_rm/src/roma_cnn_count/inData/'
+        self.dataset_root = '/inData/'
         #self.dataset_root = '/home/cscarbone/mrs_carbone/src/roma_cnn_count/inData/'
         #self.dataset_root = '/home/mrs/carlos_workspace/src/roma_cnn_count/inData/'
         #self.dataset_root = '/home/cscarbone/mrs_carbone/src/roma_cnn_count/'
